@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  clientsphere:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: clientsphere-crm
+    ports:
+      - "8005:8005"
+    environment:
+      - PORT=8005
+      - CLIENTSPHERE_DB=/app/backend/data/clientsphere.db
+    volumes:
+      - crm_data:/app/backend/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8005/api/v1/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  crm_data:
+    driver: local
